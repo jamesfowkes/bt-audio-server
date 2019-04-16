@@ -1,0 +1,3 @@
+SHELVE_FILENAME = "settings.shelve"
+VIDEO_LOCATION = "/home/pi/cave-escape-share"
+VIDEO_PLAYER = "vlc"
