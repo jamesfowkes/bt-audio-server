@@ -2,6 +2,7 @@
 
 # Enable SPI
 sed -i 's/#dtparam=spi=on/dtparam=spi=on/' /boot/config.txt
+grep -qxF 'dtoverlay=spi1-3cs' /boot/config.txt || echo 'dtoverlay=spi1-3cs' >> /boot/config.txt
 
 # Copy FBTFT module config
 cp fbtft.conf /etc/modules-load.d/
