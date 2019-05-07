@@ -8,6 +8,8 @@ Usage:
 import docopt
 import subprocess
 
+import led
+
 def play_video(filename, player):
 
 	if player == "spitft":
@@ -15,9 +17,10 @@ def play_video(filename, player):
 	elif player == "vlc":
 		args = ["vlc", filename, "vlc://quit"]
 
+	led.control(True)
 	subprocess.call(args)
+	led.control(False)
 
 if __name__ == "__main__":
 	args = docopt.docopt(__doc__)
-	play_video(args["<filename>"])
-
+	play_video(args["<filename>"], "spitft")
