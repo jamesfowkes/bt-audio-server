@@ -1,10 +1,10 @@
 import logging
 import json
-import datetime
 
-from flask import Blueprint, request, Response
+from flask import Blueprint, url_for
 
 import pathlib
+from collections import namedtuple
 
 from app import app
 #from app.settings import PersistentSettings
@@ -19,6 +19,13 @@ def setup_logging(handler):
 	
 api = Blueprint('api', __name__)
 #settings = PersistentSettings(app.config["SHELVE_FILENAME"])
+
+class Video(namedtuple("Video", ["name", "play_url"])):
+	''' Keeps information about a video file '''
+	@classmethod
+	def from_path(cls, path):
+		return cls(path.name, url_for("api.api_play_video", filename=path.name))
+
 
 @api.route("/api/rfid/read")
 def api_read_rfid():

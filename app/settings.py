@@ -52,7 +52,7 @@ class PersistentSettings:
 		with shelve.open(self.filename) as shelf:
 			get_logger().info("Setting {} values:".format(len(kwargs)))
 			for k, v in kwargs.items():
-				self.__setattr__(k, v)
+				shelf[k] = v
 
 	def set_defaults(self, **kwargs):
 		for k, v in kwargs.items():

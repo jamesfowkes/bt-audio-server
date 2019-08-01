@@ -8,7 +8,7 @@ Usage:
 import docopt
 import subprocess
 
-import led
+import app.led as led
 
 def play_video(filename, player):
 

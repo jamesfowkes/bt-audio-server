@@ -17,6 +17,7 @@ import os
 
 from app import app
 from app.api import setup_logging as api_setup_logging
+from app.html_view import setup_logging as html_view_setup_logging
 #from app.settings import setup_logging as settings_setup_logging
 
 def get_logger():
@@ -31,6 +32,7 @@ if __name__ == "__main__":
     get_logger().addHandler(logging_handler)
 
     api_setup_logging(logging_handler)
+    html_view_setup_logging(logging_handler)
     #settings_setup_logging(logging_handler)
 
     if args['--public']:
