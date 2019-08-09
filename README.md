@@ -9,6 +9,9 @@ Run `install.sh` , which will install and setup:
  - the LCD kernel module
  - the samba share
 
+Add .envrc file to the root directory with
+export PROJECTOR_WEBSERVER_CONFIG_PATH=<path-to-config-file>
+
 ## Pin Mapping
 
 The RFID reader is on SPI bus 1, with CE2 (which is /dev/spidev1.2)

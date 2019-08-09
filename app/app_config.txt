@@ -1,3 +1,4 @@
 SHELVE_FILENAME = "settings.shelve"
+RFID_DATA_STORE = "rfid_data.json"
 VIDEO_LOCATION = "/home/james/cave-escape-share"
 VIDEO_PLAYER = "vlc"
