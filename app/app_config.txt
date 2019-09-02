@@ -1,4 +1,0 @@
-SHELVE_FILENAME = "settings.shelve"
-RFID_DATA_STORE = "rfid_data.json"
-VIDEO_LOCATION = "/home/pi/cave-escape-share"
-VIDEO_PLAYER = "spitft"

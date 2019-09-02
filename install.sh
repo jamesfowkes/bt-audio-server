@@ -17,15 +17,12 @@ fi
 
 # Python
 
-pip install -r requirements.txt
-
-path_param=$1
+python3 -m pip install -r requirements.txt
 
 chmod a+x run.py
 thisdir=`pwd`
 cat tftprojector.service.template \
-| sed -e "s#EXEC_START_PATH#$thisdir/tft_projector.py#" \
-| sed -e "s#PATH#$path_param#" \
+| sed -e "s#EXEC_START_PATH#$thisdir/run.py public /home/pi/cave-escape-projector/projector.log#" \
 | sed -e "s#USER#$SUDO_USER#" > tftprojector.service
 
 systemctl enable $thisdir/tftprojector.service

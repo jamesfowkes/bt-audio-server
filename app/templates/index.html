@@ -9,8 +9,19 @@
 
 	<ul>
 	{% for video_file in video_files %}
-	  <li><a href="{{ video_file.play_url }}">{{ video_file.name }}</a></li>
+	  <li><a href="{{ video_file.play_url }}">{{ video_file.name }} (RFID: {{scan_data.files[video_file.name] or "None"}})</a></li>
 	{% endfor %}
 	</ul>
-	
+
+	{% if scan_data.lastcard is not none %}
+	<p>
+	Last card scanned was {{scan_data.lastcard}} (linked to {{scan_data.file_link}}) at {{scan_data.scantime}}
+	</p>
+
+	<p>
+	Link this card to a file:
+	{% for video_file in video_files %}
+	  <li><a href="{{ video_file.register_url }}">{{ video_file.name }}</a></li>
+	{% endfor %}
+	{% endif %}
 </html>

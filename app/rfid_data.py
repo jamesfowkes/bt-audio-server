@@ -4,6 +4,12 @@ import collections
 
 class RFIDDataStore:
 
+    """
+    A wrapper around a dictionary persisted in a JSON file
+    The dictionary keys are  RFID card UIDs.
+    The dictionary values are filenames
+    """
+
     def __init__(self, filename):
         self.filename = filename
         self.rfid_log = collections.deque(maxlen=10)
@@ -11,7 +17,7 @@ class RFIDDataStore:
         path = pathlib.Path(self.filename)
         if not path.exists():
             with open(self.filename, "w") as fp:
-                json.dump({}, fp, indent=4)        
+                json.dump({}, fp, indent=4)
 
     def load(self):
         with open(self.filename, "r") as fp:
@@ -44,3 +50,5 @@ class RFIDDataStore:
         except IndexError:
             return None
 
+    def file_to_card_map(self):
+        return {v: k for k, v in self.load().items()}

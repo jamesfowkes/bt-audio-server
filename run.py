@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """ run.py
 
@@ -15,6 +15,7 @@ import docopt
 import logging
 import logging.handlers
 import os
+import signal
 
 from app import app
 from app.api import setup_logging as api_setup_logging
@@ -35,9 +36,9 @@ if __name__ == "__main__":
 
     if args['public']:
         logging_handler = logging.handlers.RotatingFileHandler(args["<logfile>"], maxBytes=1024*1024, backupCount=3)
-        port = int(os.getenv("PROJECTOR_WEBSERVER_PORT"))
+        port = int(os.getenv("PROJECTOR_WEBSERVER_PORT", 8888))
         app_args = {"host": '0.0.0.0', "port": port, "debug": True}
-        card_reader_url = "http://0.0.0.0/" + RFID_SCAN_URL
+        card_reader_url = "http://0.0.0.0:{}{}".format(port,RFID_SCAN_URL)
     else:
         logging_handler = logging.StreamHandler()
         app_args = {"debug": True}
@@ -50,11 +51,12 @@ if __name__ == "__main__":
     html_view_setup_logging(logging_handler)
     card_reader_setup_logging(logging_handler)
 
-
     card_reader = CardReader(url=card_reader_url)
     card_reader.start()
 
     app.run(**app_args)
+
+    get_logger().info("Application stopped, waiting for card reader...")
 
     card_reader.stop()
     card_reader.join()

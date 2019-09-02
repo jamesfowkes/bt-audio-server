@@ -21,9 +21,9 @@ except ImportError:
 
 	GPIO = GPIOFake()
 
-LED_PIN = 13
+LED_PIN = 33
 
-GPIO.setmode(GPIO.BCM)
+GPIO.setmode(GPIO.BOARD)
 GPIO.setup(LED_PIN, GPIO.OUT)
 
 def control(enable):

@@ -18,17 +18,17 @@ def get_logger():
 def setup_logging(handler):
 	get_logger().setLevel(logging.INFO)
 	get_logger().addHandler(handler)
-	
+
 api = Blueprint('api', __name__)
 #settings = PersistentSettings(app.config["SHELVE_FILENAME"])
 
 rfidstore = RFIDDataStore(app.config["RFID_DATA_STORE"])
 
-class Video(namedtuple("Video", ["name", "play_url"])):
+class Video(namedtuple("Video", ["name", "play_url", "register_url"])):
 	''' Keeps information about a video file '''
 	@classmethod
 	def from_path(cls, path):
-		return cls(path.name, url_for("api.api_play_video", filename=path.name))
+		return cls(path.name, url_for("api.api_play_video", filename=path.name), url_for("api.api_register_rfid", filename=path.name))
 
 @api.route("/api/play/<filename>")
 def api_play_video(filename):
