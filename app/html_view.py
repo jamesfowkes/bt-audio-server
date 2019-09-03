@@ -28,6 +28,10 @@ def html_index():
 
     media_files = list(media_path.glob("*"))
     media_files = [Media.from_path(v) for v in media_files if v.suffix != ".json"]
+    media_files = [media_file for media_file in media_files if media_file is not None]
+
+    for file in media_files:
+        get_logger().info("Found file: {}".format(str(file)))
 
     scan_data = {
         "lastcard": rfidstore.get_last(),
