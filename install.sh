@@ -17,6 +17,7 @@ fi
 
 # Python
 
+python3 -m pip install --upgrade pip
 python3 -m pip install -r requirements.txt
 
 chmod a+x run.py
@@ -26,4 +27,3 @@ cat tftprojector.service.template \
 | sed -e "s#USER#$SUDO_USER#" > tftprojector.service
 
 systemctl enable $thisdir/tftprojector.service
-
