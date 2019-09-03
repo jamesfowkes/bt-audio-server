@@ -22,6 +22,7 @@ from app.api import setup_logging as api_setup_logging
 from app.api import RFID_SCAN_URL
 from app.html_view import setup_logging as html_view_setup_logging
 from app.card_reader import CardReader, setup_logging as card_reader_setup_logging
+from app.media import setup_logging as media_setup_logging
 
 #from app.settings import setup_logging as settings_setup_logging
 
@@ -50,7 +51,8 @@ if __name__ == "__main__":
     api_setup_logging(logging_handler)
     html_view_setup_logging(logging_handler)
     card_reader_setup_logging(logging_handler)
-
+    media_setup_logging(logging_handler)
+    
     card_reader = CardReader(url=card_reader_url)
     card_reader.start()
 

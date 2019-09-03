@@ -8,9 +8,20 @@ Usage:
 import docopt
 import subprocess
 import threading
+import logging
 
 import app.led as led
 import app.dimmer as dimmer
+
+video_thread_obj = None
+audio_thread_obj = None
+
+def get_logger():
+	return logging.getLogger(__name__)
+
+def setup_logging(handler):
+	get_logger().setLevel(logging.INFO)
+	get_logger().addHandler(handler)
 
 def video_thread(args):
 
@@ -26,15 +37,26 @@ def audio_thread(args):
 
 def play_video(filename, player):
 
-	if player == "spitft":
-		args = ["sudo", "SDL_VIDEODRIVER=fbcon", "SDL_FBDEV=/dev/fb1", "mplayer", "-vo", "sdl", "-framedrop", filename]
-	elif player == "vlc":
-		args = ["vlc", filename, "vlc://quit"]
+	global video_thread_obj
 
-	t = threading.Thread(target=video_thread, args=(args, ))
-	t.start()
+	if video_thread_obj is None or not video_thread_obj.isAlive():
+
+		get_logger().info("Firing video thread to play {}".format(filename))
+
+		if player == "spitft":
+			args = ["sudo", "SDL_VIDEODRIVER=fbcon", "SDL_FBDEV=/dev/fb1", "mplayer", "-vo", "sdl", "-framedrop", filename]
+		elif player == "vlc":
+			args = ["vlc", filename, "vlc://quit"]
+
+		video_thread_obj = threading.Thread(target=video_thread, args=(args, ))
+		video_thread_obj.start()
+	else:
+		get_logger().info("Video already playing, could not play {}".format(filename))
 
 def play_audio(filename):
+	
+	global audio_thread_obj
+	
 	args = ["mplayer", filename]
 	t = threading.Thread(target=audio_thread, args=(args, ))
 	t.start()
