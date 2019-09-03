@@ -8,9 +8,12 @@ from collections import namedtuple
 
 from app import app
 #from app.settings import PersistentSettings
-from app.video import play_video
+from app.media import play_video, play_audio
 
 from app.rfid_data import RFIDDataStore
+
+VIDEO_EXTENSIONS = [".mp4", ".m4a", ".mov"]
+AUDIO_EXTENSIONS = [".mp3", ".ogg", ".flac", ".wav"]
 
 def get_logger():
 	return logging.getLogger(__name__)
@@ -24,11 +27,44 @@ api = Blueprint('api', __name__)
 
 rfidstore = RFIDDataStore(app.config["RFID_DATA_STORE"])
 
-class Video(namedtuple("Video", ["name", "play_url", "register_url"])):
-	''' Keeps information about a video file '''
+class Media(namedtuple("Media", ["name", "play_url", "register_url", "size_b"])):
+	''' Keeps information about a media file '''
 	@classmethod
 	def from_path(cls, path):
-		return cls(path.name, url_for("api.api_play_video", filename=path.name), url_for("api.api_register_rfid", filename=path.name))
+		play_url = None
+		register_url = url_for("api.api_register_rfid", filename=path.name)
+		size_b = path.stat().st_size / 1024
+
+		if path.suffix in VIDEO_EXTENSIONS:
+			play_url = url_for("api.api_play_video", filename=path.name)
+		elif path.suffix in AUDIO_EXTENSIONS:
+			play_url = url_for("api.api_play_audio", filename=path.name)
+		
+		if play_url:
+			return cls(path.name, play_url, register_url, size_b)
+
+@api.route("/api/play_audio/<filename>")
+def api_play_audio(filename):
+
+	req = "/api/play/{}".format(filename)
+	get_logger().info("Handling {}".format(req))
+
+	audio_path = pathlib.Path(app.config["MEDIA_LOCATION"], filename)
+
+	response_code = 200
+	if audio_path.exists():
+		play_audio(str(audio_path))
+		status = "OK"
+	else:
+		response_code = 404
+		status = "{} not found".format(filename)
+
+	return json.dumps(
+		{
+			"req": req,
+			"status": status
+		}
+	), response_code
 
 @api.route("/api/play/<filename>")
 def api_play_video(filename):
@@ -36,7 +72,7 @@ def api_play_video(filename):
 	req = "/api/play/{}".format(filename)
 	get_logger().info("Handling {}".format(req))
 
-	video_path = pathlib.Path(app.config["VIDEO_LOCATION"], filename)
+	video_path = pathlib.Path(app.config["MEDIA_LOCATION"], filename)
 
 	response_code = 200
 	if video_path.exists():
@@ -87,7 +123,7 @@ def api_register_rfid(filename):
 	req = "/api/rfid/register/{}".format(filename)
 	get_logger().info("Handling {}".format(req))
 
-	video_path = pathlib.Path(app.config["VIDEO_LOCATION"], filename)
+	video_path = pathlib.Path(app.config["MEDIA_LOCATION"], filename)
 	response_code = 200
 
 	if video_path.exists():

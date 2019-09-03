@@ -9,9 +9,8 @@ import requests
 try:
     from app.MFRC522.MFRC522 import MFRC522
 except:
-    raise
-
-"""    import zmq
+    
+    import zmq
     try:
         import rfid_faker
     except:
@@ -40,7 +39,6 @@ except:
                 return (None, None)
 
     MFRC522 = MFRC522Fake
-"""
 
 SCAN_TIME = 0.1
 

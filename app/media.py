@@ -1,7 +1,7 @@
-""" video.py
+""" media.py
 
 Usage:
-	video.py <filename>
+	media.py <filename>
 
 """
 
@@ -10,11 +10,19 @@ import subprocess
 import threading
 
 import app.led as led
+import app.dimmer as dimmer
 
 def video_thread(args):
+
+	current_dimmer_value = dimmer.dimmer_get("192.168.0.57", "1")
+	dimmer.dimmer_set("192.168.0.57", "1", 25)
 	led.control(True)
 	subprocess.call(args)
 	led.control(False)
+	dimmer.dimmer_set("192.168.0.57", "1", current_dimmer_value)
+
+def audio_thread(args):
+	subprocess.call(args)
 
 def play_video(filename, player):
 
@@ -24,6 +32,11 @@ def play_video(filename, player):
 		args = ["vlc", filename, "vlc://quit"]
 
 	t = threading.Thread(target=video_thread, args=(args, ))
+	t.start()
+
+def play_audio(filename):
+	args = ["mplayer", filename]
+	t = threading.Thread(target=audio_thread, args=(args, ))
 	t.start()
 
 if __name__ == "__main__":
