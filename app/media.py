@@ -16,6 +16,8 @@ import app.dimmer as dimmer
 video_thread_obj = None
 audio_thread_obj = None
 
+stop_media_flag = False
+
 def get_logger():
 	return logging.getLogger(__name__)
 
@@ -24,16 +26,30 @@ def setup_logging(handler):
 	get_logger().addHandler(handler)
 
 def video_thread(args):
+	global stop_media_flag
 
 	current_dimmer_value = dimmer.dimmer_get("192.168.0.57", "1")
 	dimmer.dimmer_set("192.168.0.57", "1", 25)
 	led.control(True)
-	subprocess.call(args)
+	p = subprocess.Popen(args)
+
+	while p.poll() is None:
+		if stop_media_flag:
+			get_logger().info("Terminating video")
+			p.terminate()
+			p.wait()
+
 	led.control(False)
 	dimmer.dimmer_set("192.168.0.57", "1", current_dimmer_value)
 
+	stop_media_flag = False
+
 def audio_thread(args):
 	subprocess.call(args)
+
+def stop_media():
+	global stop_media_flag
+	stop_media_flag = True
 
 def play_video(filename, player):
 

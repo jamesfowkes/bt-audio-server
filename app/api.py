@@ -1,14 +1,14 @@
 import logging
 import json
 
-from flask import Blueprint, url_for
+from flask import Blueprint, url_for, redirect
 
 import pathlib
 from collections import namedtuple
 
 from app import app
 #from app.settings import PersistentSettings
-from app.media import play_video, play_audio
+from app.media import play_video, play_audio, stop_media
 
 from app.rfid_data import RFIDDataStore
 
@@ -42,6 +42,11 @@ class Media(namedtuple("Media", ["name", "play_url", "register_url", "size_b"]))
 		
 		if play_url:
 			return cls(path.name, play_url, register_url, size_b)
+
+@api.route("/api/stop_media")
+def api_stop_media():
+	stop_media()
+	return redirect(url_for("html_view.html_index"))
 
 @api.route("/api/play_audio/<filename>")
 def api_play_audio(filename):
