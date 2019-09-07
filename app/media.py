@@ -9,6 +9,8 @@ import docopt
 import subprocess
 import threading
 import logging
+import os
+import signal
 
 import app.led as led
 import app.dimmer as dimmer
@@ -32,11 +34,12 @@ def video_thread(args):
 	dimmer.dimmer_set("192.168.0.57", "1", 25)
 	led.control(True)
 	p = subprocess.Popen(args)
-
+	get_logger().info("Process ID {}".format(p.pid))
 	while p.poll() is None:
 		if stop_media_flag:
 			get_logger().info("Terminating video")
-			p.terminate()
+			subprocess.check_call(["sudo", "kill", "-9", str(p.pid)])
+			subprocess.check_call(["sudo", "killall", "mplayer"])
 			p.wait()
 
 	led.control(False)
@@ -73,9 +76,9 @@ def play_video(filename, player):
 		get_logger().info("Video already playing, could not play {}".format(filename))
 
 def play_audio(filename):
-	
+
 	global audio_thread_obj
-	
+
 	args = ["mplayer", filename]
 	t = threading.Thread(target=audio_thread, args=(args, ))
 	t.start()

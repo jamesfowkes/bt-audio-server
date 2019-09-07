@@ -7,7 +7,7 @@ import pathlib
 from collections import namedtuple
 
 from app import app
-#from app.settings import PersistentSettings
+
 from app.media import play_video, play_audio, stop_media
 
 from app.rfid_data import RFIDDataStore
@@ -23,7 +23,6 @@ def setup_logging(handler):
 	get_logger().addHandler(handler)
 
 api = Blueprint('api', __name__)
-#settings = PersistentSettings(app.config["SHELVE_FILENAME"])
 
 rfidstore = RFIDDataStore(app.config["RFID_DATA_STORE"])
 

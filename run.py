@@ -22,6 +22,7 @@ from app.api import setup_logging as api_setup_logging
 from app.api import RFID_SCAN_URL
 from app.html_view import setup_logging as html_view_setup_logging
 from app.media import setup_logging as media_setup_logging
+from app.led import control
 
 def get_logger():
     return logging.getLogger(__name__)
@@ -29,6 +30,8 @@ def get_logger():
 if __name__ == "__main__":
 
     args = docopt.docopt(__doc__)
+
+    control(False)
 
     if args['public']:
         logging_handler = logging.handlers.RotatingFileHandler(args["<logfile>"], maxBytes=1024*1024, backupCount=3)

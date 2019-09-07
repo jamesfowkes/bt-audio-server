@@ -8,37 +8,41 @@ import requests
 
 try:
     from app.MFRC522.MFRC522 import MFRC522
-except:
-    
-    import zmq
+except ImportError:
     try:
-        import rfid_faker
+        from MFRC522.MFRC522 import MFRC522
     except:
-        import app.rfid_faker as rfid_faker 
+        raise
 
-    print("Warning: could not import MFRC522. Faking it!")
+        import zmq
+        try:
+            import rfid_faker
+        except:
+            import app.rfid_faker as rfid_faker
 
-    class MFRC522Fake:
+        print("Warning: could not import MFRC522. Faking it!")
 
-        MI_OK = 0
-        PICC_REQIDL = 0
+        class MFRC522Fake:
 
-        def __init__(self, dev):
-            context = zmq.Context()
-            self.socket = context.socket(zmq.PAIR)
-            self.socket.connect(rfid_faker.FAKE_RFID_URL)
+            MI_OK = 0
+            PICC_REQIDL = 0
 
-        def MFRC522_Request(self, req):
-            return (0,0)
+            def __init__(self, dev):
+                context = zmq.Context()
+                self.socket = context.socket(zmq.PAIR)
+                self.socket.connect(rfid_faker.FAKE_RFID_URL)
 
-        def MFRC522_Anticoll(self):
-            try:
-                uid = self.socket.recv(zmq.NOBLOCK)          
-                return (self.MI_OK, uid.decode("ascii"))
-            except zmq.ZMQError:
-                return (None, None)
+            def MFRC522_Request(self, req):
+                return (0,0)
 
-    MFRC522 = MFRC522Fake
+            def MFRC522_Anticoll(self):
+                try:
+                    uid = self.socket.recv(zmq.NOBLOCK)
+                    return (self.MI_OK, uid.decode("ascii"))
+                except zmq.ZMQError:
+                    return (None, None)
+
+        MFRC522 = MFRC522Fake
 
 SCAN_TIME = 0.1
 
