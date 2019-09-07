@@ -54,8 +54,11 @@ def stop_media():
 def play_video(filename, player):
 
 	global video_thread_obj
+	global stop_media_flag
 
 	if video_thread_obj is None or not video_thread_obj.isAlive():
+
+		stop_media_flag = False
 
 		get_logger().info("Firing video thread to play {}".format(filename))
 
