@@ -21,9 +21,12 @@ python3 -m pip install --upgrade pip
 python3 -m pip install -r requirements.txt
 
 chmod a+x run.py
+chmod a+x run_public.sh
+chmod a+x run_local.sh
+
 thisdir=`pwd`
 cat tftprojector.service.template \
-| sed -e "s#EXEC_START_PATH#$thisdir/run.py public /home/pi/cave-escape-projector/projector.log#" \
+| sed -e "s#EXEC_START_PATH#$thisdir/run_public.sh#" \
 | sed -e "s#USER#$SUDO_USER#" > tftprojector.service
 
 systemctl enable $thisdir/tftprojector.service
