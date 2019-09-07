@@ -45,6 +45,7 @@ class Media(namedtuple("Media", ["name", "play_url", "register_url", "size_b"]))
 
 @api.route("/api/stop_media")
 def api_stop_media():
+	get_logger().info("Handling /api/stop_media")
 	stop_media()
 	return redirect(url_for("html_view.html_index"))
 
@@ -101,26 +102,37 @@ def api_scan_rfid(uid):
 	req = "/api/rfid/scan/{}".format(uid)
 	get_logger().info("Handling {}".format(req))
 
-	rfidstore.log(uid)
+	if uid != "NOCARD":
 
-	data = rfidstore.query(uid)
-	
-	if data:
-		json_resp_str, response_code = api_play_video(data)
-		json_resp = json.loads(json_resp_str)
-		get_logger().info("Video play status: " + json_resp["status"])
-		json_resp["req"] = req
-		return json.dumps(json_resp), response_code
+		rfidstore.log(uid)
 
+		data = rfidstore.query(uid)
+		
+		if data:
+			json_resp_str, response_code = api_play_video(data)
+			json_resp = json.loads(json_resp_str)
+			get_logger().info("Video play status: " + json_resp["status"])
+			json_resp["req"] = req
+			return json.dumps(json_resp), response_code
+
+		else:
+			status = "RFID {} not found".format(uid)
+			get_logger().info(status)
+			return json.dumps(
+				{
+					"req": req,
+					"status": status
+				}
+			), 404
 	else:
-		status = "RFID {} not found".format(uid)
-		get_logger().info(status)
+		get_logger().info("No card, stopping media")
+		stop_media()
 		return json.dumps(
 			{
 				"req": req,
-				"status": status
+				"status": "OK"
 			}
-		), 404
+		), 200
 
 @api.route("/api/rfid/register/<filename>")
 def api_register_rfid(filename):
