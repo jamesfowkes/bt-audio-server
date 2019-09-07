@@ -49,7 +49,11 @@ class RAATCardReader(threading.Thread):
                 if self.url:
                     full_url = self.url.format(uid=uid)
                     get_logger().info("Posting to URL {}".format(full_url))
-                    requests.get(full_url)    
+                    try:
+                    	requests.get(full_url)
+                    except requests.exceptions.ConnectionError:
+                        get_logger().info("Connection error when opening {}".format(full_url))
+
             time.sleep(SCAN_TIME)
 
     def stop(self):

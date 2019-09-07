@@ -1,0 +1,13 @@
+[Unit]
+Description=Card Reader Service
+ 
+[Service]
+User=pi
+Environment=DISPLAY=:0
+ExecStart=/home/pi/cave-escape-projector/card_reader_app.py /dev/ttyUSB0 http://0.0.0.0:8888/api/rfid/scan
+StandardOutput=journal+console
+StandardError=journal+console
+ 
+[Install]
+WantedBy=multi-user.target
+Alias=cardreader.service
