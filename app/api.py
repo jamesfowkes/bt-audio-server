@@ -1,3 +1,4 @@
+import os
 import logging
 import json
 
@@ -38,9 +39,21 @@ class Media(namedtuple("Media", ["name", "play_url", "register_url", "size_b"]))
 			play_url = url_for("api.api_play_video", filename=path.name)
 		elif path.suffix in AUDIO_EXTENSIONS:
 			play_url = url_for("api.api_play_audio", filename=path.name)
-		
+
 		if play_url:
 			return cls(path.name, play_url, register_url, size_b)
+
+@api.route("/api/shutdown")
+def api_shutdown():
+	get_logger().info("Shutting down Pi")
+	os.system('sudo shutdown now')
+	return ("Shutting down", 200)
+
+@api.route("/api/reboot")
+def api_reboot():
+	get_logger().info("Rebooting Pi")
+	os.system('sudo reboot')
+	return ("Rebooting", 200)
 
 @api.route("/api/stop_media")
 def api_stop_media():
@@ -106,7 +119,7 @@ def api_scan_rfid(uid):
 		rfidstore.log(uid)
 
 		data = rfidstore.query(uid)
-		
+
 		if data:
 			json_resp_str, response_code = api_play_video(data)
 			json_resp = json.loads(json_resp_str)
