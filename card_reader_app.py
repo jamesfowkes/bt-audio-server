@@ -10,7 +10,7 @@ Usage:
 import logging
 import docopt
 
-from app.raat_card_reader import RAATCardReader, setup_logging as card_reader_setup_logging
+from raat_card_reader import RAATCardReader, setup_logging as card_reader_setup_logging
 
 def get_logger():
     return logging.getLogger(__name__)

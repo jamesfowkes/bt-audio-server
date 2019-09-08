@@ -30,8 +30,12 @@ def setup_logging(handler):
 def video_thread(args):
 	global stop_media_flag
 
+	with open("/home/pi/cave-escape-share/dim.txt", 'r') as f:
+		dimmer_value = int(f.readline().strip())
+		get_logger().info("Setting dimmer to {}%".format(dimmer_value))
+
 	current_dimmer_value = dimmer.dimmer_get("192.168.0.57", "1")
-	dimmer.dimmer_set("192.168.0.57", "1", 25)
+	dimmer.dimmer_set("192.168.0.57", "1", dimmer_value)
 	led.control(True)
 	p = subprocess.Popen(args)
 	get_logger().info("Process ID {}".format(p.pid))
