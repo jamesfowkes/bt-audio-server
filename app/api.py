@@ -157,7 +157,7 @@ def api_register_rfid(filename):
 
 	if video_path.exists():
 		if rfidstore.get_last() is not None:
-			rfidstore.save({rfidstore.get_last() : filename})
+			rfidstore.update(rfidstore.get_last(), filename)
 			status = "OK"
 		else:
 			response_code = 404
