@@ -33,8 +33,11 @@ if __name__ == "__main__":
 
     control(False)
 
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
     if args['public']:
         logging_handler = logging.handlers.RotatingFileHandler(args["<logfile>"], maxBytes=1024*1024, backupCount=3)
+        logging_handler.setFormatter(formatter)
         port = int(os.getenv("PROJECTOR_WEBSERVER_PORT", 8888))
         app_args = {"host": '0.0.0.0', "port": port, "debug": True}
         card_reader_url = "http://0.0.0.0:{}{}".format(port,RFID_SCAN_URL)
