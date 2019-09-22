@@ -19,7 +19,8 @@ class RAATCardReader(threading.Thread):
         super(RAATCardReader, self).__init__()
         self.queue = kwargs.get("queue", None)
         self.url = kwargs.get("url", None)
-        self.reader = serial.Serial(device, 115200)
+        self.device = device
+        self.reader = serial.Serial(device, 115200, timeout=1)
         time.sleep(2)
         self.runflag = True
         self.last_reply = ""
@@ -50,9 +51,18 @@ class RAATCardReader(threading.Thread):
                     full_url = self.url.format(uid=uid)
                     get_logger().info("Posting to URL {}".format(full_url))
                     try:
-                    	requests.get(full_url)
+                    	requests.get(full_url, timeout=1)
                     except requests.exceptions.ConnectionError:
                         get_logger().info("Connection error when opening {}".format(full_url))
+                    except requests.exceptions.Timeout:
+                        get_logger().info("Timeout when opening {}".format(full_url))
+                if reply == "NOCARD":
+                    get_logger().info("Restarting Arduino")
+                    self.reader.close()
+                    self.reader = serial.Serial(self.device, 115200, timeout=1)
+                    time.sleep(1.5)
+                else:
+                    get_logger().info("Continuing RFID scan")
 
             time.sleep(SCAN_TIME)
 

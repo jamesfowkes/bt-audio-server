@@ -137,8 +137,9 @@ def api_scan_rfid(uid):
 				}
 			), 404
 	else:
-		get_logger().info("No card, stopping media")
-		stop_media()
+		#get_logger().info("No card, stopping media")
+		#stop_media()
+		get_logger().info("No card, ignoring!")
 		return json.dumps(
 			{
 				"req": req,

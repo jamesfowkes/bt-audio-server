@@ -41,10 +41,12 @@ def video_thread(args):
 	get_logger().info("Process ID {}".format(p.pid))
 	while p.poll() is None:
 		if stop_media_flag:
-			get_logger().info("Terminating video")
+			get_logger().info("Terminating video (thread {})".format(p.pid))
 			subprocess.check_call(["sudo", "kill", "-9", str(p.pid)])
+			get_logger().info("Terminating mplayer".format(p.pid))
 			subprocess.check_call(["sudo", "killall", "mplayer"])
 			p.wait()
+			get_logger().info("Terminated")
 
 	led.control(False)
 	dimmer.dimmer_set("192.168.0.57", "1", current_dimmer_value)
