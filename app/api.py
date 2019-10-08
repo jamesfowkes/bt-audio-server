@@ -64,7 +64,7 @@ def api_stop_media():
 @api.route("/api/play_audio/<filename>")
 def api_play_audio(filename):
 
-	req = "/api/play/{}".format(filename)
+	req = "/api/play_audio/{}".format(filename)
 	get_logger().info("Handling {}".format(req))
 
 	audio_path = pathlib.Path(app.config["MEDIA_LOCATION"], filename)

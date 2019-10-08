@@ -85,7 +85,7 @@ def play_audio(filename):
 
 	global audio_thread_obj
 
-	args = ["mplayer", filename]
+	args = ["sudo", "mplayer", "-ao", "alsa:device=hw=1.0", filename]
 	t = threading.Thread(target=audio_thread, args=(args, ))
 	t.start()
 
