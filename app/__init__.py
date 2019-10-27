@@ -1,7 +1,7 @@
 from flask import Flask
 
 app = Flask(__name__)
-app.config.from_envvar("PIGEON_WEBSERVER_CONFIG_PATH")
+app.config.from_envvar("BT_AUDIO_SERVER_CONFIG_PATH")
 
 #from app.views import standard_view
 from app.api import api
