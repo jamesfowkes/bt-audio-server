@@ -1,0 +1,14 @@
+[Unit]
+Description=Bluetooth Audio Server Service
+ 
+[Service]
+User=USER
+Environment=DISPLAY=:0
+Environment="BT_AUDIO_SERVER_CONFIG_PATH=/home/pi/bt-audio-server/app/app_config.txt"
+ExecStart=EXEC_START_PATH
+StandardOutput=journal+console
+StandardError=journal+console
+ 
+[Install]
+WantedBy=multi-user.target
+Alias=btaudioserver.service
