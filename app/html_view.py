@@ -5,7 +5,6 @@ from flask import Blueprint, render_template
 
 from app import app
 from app.api import Media
-from app.api import rfidstore
 
 def get_logger():
     return logging.getLogger(__name__)
@@ -33,13 +32,7 @@ def html_index():
     for file in media_files:
         get_logger().info("Found file: {}".format(str(file)))
 
-    scan_data = {
-        "lastcard": rfidstore.get_last(),
-        "scantime": 0,
-        "file_link" : "None",
-        "files": rfidstore.file_to_card_map()
-    }
-    return render_template("index.html", media_path=media_path, media_files=media_files, scan_data=scan_data, errors=errors)
+    return render_template("index.html", media_path=media_path, media_files=media_files, errors=errors)
 
 @html_view.route("/help.html")
 def html_help():

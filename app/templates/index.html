@@ -11,19 +11,7 @@
 
 	<ul>
 	{% for media_file in media_files %}
-	  <li><a href="{{ media_file.play_url }}">{{ media_file.name }} (RFID: {{scan_data.files[media_file.name] or "None"}}, size: {{ '%0.2f'| format(media_file.size_b / 1024) }}MB)</a></li>
+	  <li><a href="{{ media_file.play_url }}">{{ media_file.name }} (size: {{ '%0.2f'| format(media_file.size_b / 1024) }}MB)</a></li>
 	{% endfor %}
 	</ul>
-
-	{% if scan_data.lastcard is not none %}
-	<p>
-	Last card scanned was {{scan_data.lastcard}} (linked to {{scan_data.file_link}}) at {{scan_data.scantime}}
-	</p>
-
-	<p>
-	Link this card to a file:
-	{% for media_file in media_files %}
-	  <li><a href="{{ media_file.register_url }}">{{ media_file.name }}</a></li>
-	{% endfor %}
-	{% endif %}
 </html>

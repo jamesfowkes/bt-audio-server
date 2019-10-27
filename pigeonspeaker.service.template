@@ -1,14 +1,14 @@
 [Unit]
-Description=TFT Projector Service
+Description=Pigeon Speaker Service
  
 [Service]
 User=USER
 Environment=DISPLAY=:0
-Environment="PROJECTOR_WEBSERVER_CONFIG_PATH=/home/pi/cave-escape-projector/app/app_config.txt"
+Environment="PIGEON_SPEAKER_WEBSERVER_CONFIG_PATH=/home/pi/cave-escape-pigeon/app/app_config.txt"
 ExecStart=EXEC_START_PATH
 StandardOutput=journal+console
 StandardError=journal+console
  
 [Install]
 WantedBy=multi-user.target
-Alias=tftprojector.service
+Alias=pigeonspeaker.service

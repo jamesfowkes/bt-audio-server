@@ -15,14 +15,11 @@ import docopt
 import logging
 import logging.handlers
 import os
-import signal
 
 from app import app
 from app.api import setup_logging as api_setup_logging
-from app.api import RFID_SCAN_URL
 from app.html_view import setup_logging as html_view_setup_logging
 from app.media import setup_logging as media_setup_logging
-from app.led import control
 
 def get_logger():
     return logging.getLogger(__name__)
@@ -31,8 +28,6 @@ if __name__ == "__main__":
 
     args = docopt.docopt(__doc__)
 
-    control(False)
-
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
     if args['public']:
@@ -40,11 +35,9 @@ if __name__ == "__main__":
         logging_handler.setFormatter(formatter)
         port = int(os.getenv("PROJECTOR_WEBSERVER_PORT", 8888))
         app_args = {"host": '0.0.0.0', "port": port, "debug": True}
-        card_reader_url = "http://0.0.0.0:{}{}".format(port,RFID_SCAN_URL)
     else:
         logging_handler = logging.StreamHandler()
         app_args = {"debug": True}
-        card_reader_url = "http://localhost:5000" + RFID_SCAN_URL
 
     get_logger().setLevel(logging.INFO)
     get_logger().addHandler(logging_handler)
