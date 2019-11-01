@@ -4,7 +4,7 @@ Description=Bluetooth Audio Server Service
 [Service]
 User=USER
 Environment=DISPLAY=:0
-Environment="BT_AUDIO_SERVER_CONFIG_PATH=/home/pi/bt-audio-server/app/app_config.txt"
+Environment="BT_AUDIO_SERVER_CONFIG_PATH=/home/pi/bt-audio-server/bt_audio_server/app/app_config.txt"
 ExecStart=EXEC_START_PATH
 StandardOutput=journal+console
 StandardError=journal+console

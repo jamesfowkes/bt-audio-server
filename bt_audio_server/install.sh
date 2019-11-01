@@ -1,5 +1,3 @@
-## TFT module
-
 ## Samba
 
 mkdir -p "/home/pi/bt-audio-server-share"
@@ -14,12 +12,10 @@ python3 -m pip install --upgrade pip
 python3 -m pip install -r requirements.txt
 
 chmod a+x run.py
-chmod a+x run_public.sh
-chmod a+x run_local.sh
 
 thisdir=`pwd`
 cat btaudioserver.service.template \
-| sed -e "s#EXEC_START_PATH#$thisdir/run_public.sh#" \
+| sed -e "s#EXEC_START_PATH#$thisdir/run.py public /home/pi/bt-audio-server/bt-audio-server.log#" \
 | sed -e "s#USER#$SUDO_USER#" > btaudioserver.service
 
 systemctl enable $thisdir/btaudioserver.service
