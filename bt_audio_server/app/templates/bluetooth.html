@@ -1,0 +1,12 @@
+<html>
+
+	<h1>Bluetooth Audio Server</h1>
+
+	<p>
+		<h2>Discovered Bluetooth Devices</h2>
+		<ul>
+		{% for device in devices %}
+	  		<li><a href="{{ device.select_url }}">{{ device.name }} {%if device.paired %} (paired){% endif %}</a></li>
+		{% endfor %}
+		</ul>
+</html>

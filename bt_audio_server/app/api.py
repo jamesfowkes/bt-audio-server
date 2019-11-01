@@ -10,6 +10,10 @@ from collections import namedtuple
 from app import app
 
 from app.media import play_audio
+try:
+	from app.bluetoothctl import Bluetoothctl
+except:
+	from bluetoothctl import Bluetoothctl
 
 AUDIO_EXTENSIONS = [".mp3", ".ogg", ".flac", ".wav"]
 
@@ -34,6 +38,13 @@ class Media(namedtuple("Media", ["name", "play_url", "size_b"])):
 
 		if play_url:
 			return cls(path.name, play_url, size_b)
+
+@api.route("/api/select_bt_device/<mac>")
+def api_select_bt_device(mac):
+	if Bluetoothctl().pair(mac):
+		return ("Pair successful", 200)
+	else:
+		return ("Pair unsuccessful", 500)
 
 @api.route("/api/shutdown")
 def api_shutdown():

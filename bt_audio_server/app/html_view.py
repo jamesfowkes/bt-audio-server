@@ -5,6 +5,7 @@ from flask import Blueprint, render_template
 
 from app import app
 from app.api import Media
+from app.bt import BTDevice
 
 def get_logger():
     return logging.getLogger(__name__)
@@ -38,4 +39,8 @@ def html_index():
 def html_help():
     return render_template("help.html")
 
+@html_view.route("/bluetooth.html")
+def html_bluetooth():
+    devices = BTDevice.scan_now()
 
+    return render_template("bluetooth.html", devices=devices)
