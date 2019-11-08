@@ -20,6 +20,8 @@ from app import app
 from app.api import setup_logging as api_setup_logging
 from app.html_view import setup_logging as html_view_setup_logging
 from app.media import setup_logging as media_setup_logging
+from app.bt import BTThread
+from app.settings import PersistentSettings
 
 def get_logger():
     return logging.getLogger(__name__)
@@ -30,6 +32,8 @@ if __name__ == "__main__":
 
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
+    settings = PersistentSettings.get("settings.shelve")
+    
     if args['public']:
         logging_handler = logging.handlers.RotatingFileHandler(args["<logfile>"], maxBytes=1024*1024, backupCount=3)
         logging_handler.setFormatter(formatter)
@@ -39,6 +43,7 @@ if __name__ == "__main__":
         logging_handler = logging.StreamHandler()
         app_args = {"debug": True}
 
+
     get_logger().setLevel(logging.INFO)
     get_logger().addHandler(logging_handler)
 
@@ -46,4 +51,7 @@ if __name__ == "__main__":
     html_view_setup_logging(logging_handler)
     media_setup_logging(logging_handler)
     
+    bt_thread = BTThread(settings)
+    bt_thread.start()
+
     app.run(**app_args)

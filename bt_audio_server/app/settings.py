@@ -9,6 +9,8 @@ def setup_logging(handler):
 	get_logger().setLevel(logging.INFO)
 	get_logger().addHandler(handler)
 
+files = {}
+
 class PersistentSettings:
 
 	def __init__(self, filename):
@@ -59,3 +61,9 @@ class PersistentSettings:
 			if self.get(k) is None:
 				self.__setattr__(k, v)
 
+
+	@classmethod
+	def open(cls, filename):
+		if filename not in files:
+			files[filename] = PersistentSettings(filename)
+		return files[filename]

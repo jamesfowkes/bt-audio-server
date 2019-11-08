@@ -42,7 +42,10 @@ class Media(namedtuple("Media", ["name", "play_url", "size_b"])):
 @api.route("/api/select_bt_device/<mac>")
 def api_select_bt_device(mac):
 	if Bluetoothctl().pair(mac):
-		return ("Pair successful", 200)
+		if Bluetoothctl().connect(mac):
+			return ("Pair/connect successful", 200)
+		else:
+			return ("Cconnect unsuccessful", 200)
 	else:
 		return ("Pair unsuccessful", 500)
 

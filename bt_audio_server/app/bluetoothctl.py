@@ -33,18 +33,18 @@ class Bluetoothctl:
     """A wrapper for bluetoothctl utility."""
 
     def __init__(self):
-        self.child = pexpect.spawn("bluetoothctl", echo = False)
+        self.child = pexpect.spawnu("bluetoothctl", echo = False)
 
     def get_output(self, command, pause = 0):
         """Run a command in bluetoothctl prompt, return output as a list of lines."""
         self.child.send(command + "\n")
         time.sleep(pause)
-        start_failed = self.child.expect(["bluetooth", pexpect.EOF])
+        start_failed = self.child.expect(["\[\w+\]", pexpect.EOF])
 
         if start_failed:
             raise BluetoothctlError("Bluetoothctl failed after running " + command)
 
-        return self.child.before.decode("utf-8").split("\r\n")
+        return self.child.before.split("\r\n")
 
     def start_scan(self):
         """Start bluetooth scanning process."""
@@ -55,7 +55,7 @@ class Bluetoothctl:
             return None
 
     def stop_scan(self):
-        """Start bluetooth scanning process."""
+        """Stop bluetooth scanning process."""
         try:
             self.get_output("scan off")
         except BluetoothctlError as e:
@@ -140,6 +140,24 @@ class Bluetoothctl:
         else:
             return out
 
+    def get_device_info_dict(self, mac_address):
+
+        info_dict = None
+        info = self.get_device_info(mac_address)
+        if info:
+            info_dict = {}
+            for line in info:
+                try:
+                    key_name, value = line.split(":", 1)
+                    info_dict[key_name.strip()] = value.strip()
+                except ValueError:
+                    pass
+        return info_dict
+        
+    def is_connected(self, mac_address):
+        info = self.get_device_info_dict(mac_address)
+        return info.get("Connected", None) == "yes"
+
     def pair(self, mac_address):
         """Try to pair with a device by mac address."""
         try:
@@ -201,9 +219,4 @@ if __name__ == "__main__":
         time.sleep(1)
 
     print(bl.get_discoverable_devices())
-
-
-
-
-
 
