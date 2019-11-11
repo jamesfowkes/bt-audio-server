@@ -17,10 +17,10 @@ import logging.handlers
 import os
 
 from app import app
-from app.api import setup_logging as api_setup_logging
-from app.html_view import setup_logging as html_view_setup_logging
+from app.api import setup_logging as api_setup_logging, register_bluetooth as api_register_bluetooth
+from app.html_view import setup_logging as html_view_setup_logging, register_bluetooth as html_view_register_bluetooth
 from app.media import setup_logging as media_setup_logging
-from app.bt import BTThread
+from app.bt import BTThread, setup_logging as bt_setup_logging
 from app.settings import PersistentSettings
 
 def get_logger():
@@ -32,7 +32,7 @@ if __name__ == "__main__":
 
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-    settings = PersistentSettings.get("settings.shelve")
+    settings = PersistentSettings("settings.shelve")
     
     if args['public']:
         logging_handler = logging.handlers.RotatingFileHandler(args["<logfile>"], maxBytes=1024*1024, backupCount=3)
@@ -50,8 +50,15 @@ if __name__ == "__main__":
     api_setup_logging(logging_handler)
     html_view_setup_logging(logging_handler)
     media_setup_logging(logging_handler)
+    bt_setup_logging(logging_handler)
     
     bt_thread = BTThread(settings)
     bt_thread.start()
 
+    api_register_bluetooth(bt_thread)
+    html_view_register_bluetooth(bt_thread)
+
     app.run(**app_args)
+
+    bt_thread.stop_thread()
+    bt_thread.join()

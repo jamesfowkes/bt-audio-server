@@ -5,7 +5,8 @@ from flask import Blueprint, render_template
 
 from app import app
 from app.api import Media
-from app.bt import BTDevice
+
+bt_thread = None
 
 def get_logger():
     return logging.getLogger(__name__)
@@ -13,6 +14,10 @@ def get_logger():
 def setup_logging(handler):
     get_logger().setLevel(logging.INFO)
     get_logger().addHandler(handler)
+
+def register_bluetooth(thread):
+    global bt_thread
+    bt_thread = thread
 
 html_view = Blueprint('html_view', __name__)
 
@@ -41,6 +46,9 @@ def html_help():
 
 @html_view.route("/bluetooth.html")
 def html_bluetooth():
-    devices = BTDevice.scan_now()
+    bt_thread.start_scan()
+    while bt_thread.busy():
+        pass
 
-    return render_template("bluetooth.html", devices=devices)
+    get_logger().info("Found {} devices".format(len(bt_thread.devices)))
+    return render_template("bluetooth.html", devices=bt_thread.devices)

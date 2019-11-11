@@ -23,11 +23,15 @@
 
 import time
 import pexpect
+import re
+
+def escape_ansi(line):
+    ansi_escape =re.compile(r'(\x9B|\x1B\[)[0-?]*[ -\/]*[@-~]')
+    return ansi_escape.sub('', line)
 
 class BluetoothctlError(Exception):
     """This exception is raised, when bluetoothctl fails to start."""
     pass
-
 
 class Bluetoothctl:
     """A wrapper for bluetoothctl utility."""
@@ -37,6 +41,7 @@ class Bluetoothctl:
 
     def get_output(self, command, pause = 0):
         """Run a command in bluetoothctl prompt, return output as a list of lines."""
+        self.child
         self.child.send(command + "\n")
         time.sleep(pause)
         start_failed = self.child.expect(["\[\w+\]", pexpect.EOF])
@@ -44,7 +49,9 @@ class Bluetoothctl:
         if start_failed:
             raise BluetoothctlError("Bluetoothctl failed after running " + command)
 
-        return self.child.before.split("\r\n")
+        stripped = escape_ansi(self.child.before)
+        print(stripped)
+        return stripped.split("\r\n")
 
     def start_scan(self):
         """Start bluetooth scanning process."""
@@ -88,7 +95,8 @@ class Bluetoothctl:
                         "mac_address": attribute_list[1],
                         "name": attribute_list[2]
                     }
-
+        else:
+            print("Invalid string '{}'".format(info_string))
         return device
 
     def get_available_devices(self):
