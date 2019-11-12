@@ -62,7 +62,7 @@ if __name__ == "__main__":
     api_register_bluetooth(bt_thread)
     html_view_register_bluetooth(bt_thread)
 
-    app.run(**app_args, use_reloader=False)
+    app.run(use_reloader=False, **app_args)
 
     bt_thread.stop_thread()
     bt_thread.join()
