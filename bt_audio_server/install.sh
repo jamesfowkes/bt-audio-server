@@ -16,6 +16,6 @@ chmod a+x run.py
 thisdir=`pwd`
 cat btaudioserver.service.template \
 | sed -e "s#EXEC_START_PATH#$thisdir/run.py public /home/pi/bt-audio-server/bt-audio-server.log#" \
-| sed -e "s#USER#$SUDO_USER#" > btaudioserver.service
+| sed -e "s#USER#$pi#" > btaudioserver.service
 
 systemctl enable $thisdir/btaudioserver.service
