@@ -1,7 +1,7 @@
 amqp==2.5.2
 billiard==3.6.1.0
 -e git+git@github.com:jamesfowkes/bt-audio-server.git@c4bfb2249195f34f2942aa664873ec9d732141b0#egg=bt_audio_server
-celery==4.3.0
+celery==5.2.2
 Click==7.0
 docopt==0.6.2
 Flask==1.1.1
